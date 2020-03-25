@@ -19,9 +19,61 @@ namespace ManualDataBinding.UI
     /// </summary>
     public partial class NoteEditor : UserControl
     {
+        private Note _note;
+        /// <summary>
+        /// The Note that we will be editting on this control
+        /// </summary>
+        public Note Note
+        {
+            get => _note;
+            set
+            {
+                if (_note != null) _note.NoteChanged -= OnNoteChanged;
+                _note = value;
+                if (_note != null)
+                {
+                    _note.NoteChanged += OnNoteChanged;
+                    OnNoteChanged(_note, new EventArgs());
+                }
+            }
+        }
+
         public NoteEditor()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Event handler to update Controls when Note is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnNoteChanged(object sender, EventArgs e)
+        {
+            if (Note == null) return;
+
+            Title.Text = Note.Title;
+            Body.Text = Note.Body;
+        }
+
+        /// <summary>
+        /// Event handler to update note Title
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnTitleChanged(object sender, TextChangedEventArgs e)
+        {
+            Note.Title = Title.Text;
+        }
+
+        /// <summary>
+        /// Event handler to update note Body
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnBodyChanged(object sender, TextChangedEventArgs e)
+        {
+            Note.Body = Body.Text;
         }
     }
 }
